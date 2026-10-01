@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Antimony.Core/Antimony.Core.csproj" />
+  <Project Path="Antimony.Test/Antimony.Test.csproj" />
+</Solution>

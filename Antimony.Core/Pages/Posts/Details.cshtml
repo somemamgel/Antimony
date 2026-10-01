@@ -1,0 +1,17 @@
+@page "/posts/{id:int}"
+@model Antimony.Core.Pages.Posts.DetailsModel
+@{ ViewData["Title"] = Model.Post.Title; }
+<article>
+    <header class="page-heading">
+        <h1>@Model.Post.Title</h1>
+        <p class="text-muted">发布于 @Model.Post.PublishedAt?.ToString("yyyy-MM-dd")</p>
+        <div class="tag-list">
+        @foreach (var tag in Model.Post.Tags.OrderBy(t => t.Name))
+        {
+            <a class="tag" asp-page="/Tags/Details" asp-route-id="@tag.Id">@tag.Name</a>
+        }
+        </div>
+    </header>
+    <div class="markdown-body">@Html.Raw(Model.Html)</div>
+</article>
+<p class="mt-4"><a asp-page="/Index">← 返回文章列表</a></p>

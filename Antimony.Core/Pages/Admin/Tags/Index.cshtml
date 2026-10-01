@@ -1,0 +1,36 @@
+@page
+@model Antimony.Core.Pages.Admin.Tags.IndexModel
+@{ ViewData["Title"] = "标签管理"; }
+<h1 class="mb-4">标签管理</h1>
+@if (!string.IsNullOrEmpty(Model.Message)) { <div class="alert alert-success" role="status">@Model.Message</div> }
+<div asp-validation-summary="All" class="text-danger" role="alert"></div>
+<form method="post" asp-page-handler="Save" class="action-list mb-4">
+    <label for="new-tag" class="visually-hidden">新标签名称</label>
+    <input id="new-tag" name="Name" value="@(Model.EditingId is null ? Model.Name : "")" class="form-control tag-name-input" placeholder="新标签名称" maxlength="80" required />
+    <button class="btn btn-primary">创建标签</button>
+</form>
+@if (Model.Tags.Count == 0) { <div class="empty-state">还没有标签。</div> }
+else
+{
+<div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>标签名称</th><th>关联文章（含草稿）</th><th>操作</th></tr></thead>
+    <tbody>
+    @foreach (var tag in Model.Tags)
+    {
+        <tr>
+            <td><form id="rename-@tag.Id" method="post" asp-page-handler="Save" class="action-list">
+                <input type="hidden" name="id" value="@tag.Id" />
+                <input name="Name" value="@(Model.EditingId == tag.Id ? Model.Name : tag.Name)" class="form-control tag-name-input" maxlength="80" required aria-label="标签名称" />
+            </form></td>
+            <td>@tag.Count</td>
+            <td><div class="action-list">
+                <button form="rename-@tag.Id" class="btn btn-sm btn-outline-primary">重命名</button>
+                <form method="post" asp-page-handler="Delete" data-confirm="确定删除这个标签？关联文章会保留。">
+                    <input type="hidden" name="id" value="@tag.Id" /><button class="btn btn-sm btn-outline-danger">删除</button>
+                </form>
+            </div></td>
+        </tr>
+    }
+    </tbody>
+</table></div>
+}

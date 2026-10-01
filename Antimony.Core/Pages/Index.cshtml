@@ -1,0 +1,29 @@
+@page
+@model IndexModel
+@{ ViewData["Title"] = "文章"; }
+<div class="page-heading"><h1>文章</h1><p class="text-muted">记录思考，分享生活。</p></div>
+@if (Model.Posts.Count == 0)
+{
+    <div class="empty-state">还没有已发布的文章。</div>
+}
+@foreach (var post in Model.Posts)
+{
+    <article class="post-card">
+        <h2><a asp-page="/Posts/Details" asp-route-id="@post.Id">@post.Title</a></h2>
+        <p class="text-muted"><time datetime="@post.PublishedAt?.ToString("O")">@post.PublishedAt?.ToString("yyyy-MM-dd")</time></p>
+        <div class="tag-list">
+        @foreach (var tag in post.Tags.OrderBy(t => t.Name))
+        {
+            <a class="tag" asp-page="/Tags/Details" asp-route-id="@tag.Id">@tag.Name</a>
+        }
+        </div>
+    </article>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination-bar" aria-label="文章分页">
+        @if (Model.PageNumber > 1) { <a asp-route-pageNumber="@(Model.PageNumber - 1)">上一页</a> }
+        <span>第 @Model.PageNumber / @Model.TotalPages 页</span>
+        @if (Model.PageNumber < Model.TotalPages) { <a asp-route-pageNumber="@(Model.PageNumber + 1)">下一页</a> }
+    </nav>
+}

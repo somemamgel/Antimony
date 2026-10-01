@@ -1,0 +1,20 @@
+@page "/tags/{id:int}"
+@model Antimony.Core.Pages.Tags.DetailsModel
+@{ ViewData["Title"] = "标签：" + Model.Tag.Name; }
+<h1 class="mb-4">标签：@Model.Tag.Name</h1>
+@foreach (var post in Model.Posts)
+{
+    <article class="post-card">
+        <h2><a asp-page="/Posts/Details" asp-route-id="@post.Id">@post.Title</a></h2>
+        <p class="text-muted">@post.PublishedAt?.ToString("yyyy-MM-dd")</p>
+    </article>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination-bar" aria-label="文章分页">
+        @if (Model.PageNumber > 1) { <a asp-route-id="@Model.Tag.Id" asp-route-pageNumber="@(Model.PageNumber - 1)">上一页</a> }
+        <span>第 @Model.PageNumber / @Model.TotalPages 页</span>
+        @if (Model.PageNumber < Model.TotalPages) { <a asp-route-id="@Model.Tag.Id" asp-route-pageNumber="@(Model.PageNumber + 1)">下一页</a> }
+    </nav>
+}
+<p class="mt-4"><a asp-page="/Tags/Index">← 全部标签</a></p>

@@ -1,0 +1,42 @@
+@page
+@model Antimony.Core.Pages.Admin.Posts.IndexModel
+@{ ViewData["Title"] = "文章管理"; }
+<div class="heading-actions"><h1>文章管理</h1><a class="btn btn-primary" asp-page="Edit">新建文章</a></div>
+@if (!string.IsNullOrEmpty(Model.Message)) { <div class="alert alert-success" role="status">@Model.Message</div> }
+@if (Model.Posts.Count == 0) { <div class="empty-state">还没有文章，创建第一篇吧。</div> }
+else
+{
+<div class="table-responsive"><table class="table align-middle">
+    <thead><tr><th>标题</th><th>状态</th><th>更新时间（UTC）</th><th>操作</th></tr></thead>
+    <tbody>
+    @foreach (var post in Model.Posts)
+    {
+        <tr>
+            <td><a asp-page="Edit" asp-route-id="@post.Id">@post.Title</a></td>
+            <td><span class="badge @(post.IsPublished ? "bg-success" : "bg-secondary")">@(post.IsPublished ? "已发布" : "草稿")</span></td>
+            <td>@post.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+            <td><div class="action-list">
+                <a class="btn btn-sm btn-outline-primary" asp-page="Edit" asp-route-id="@post.Id">编辑</a>
+                @if (post.IsPublished) { <a class="btn btn-sm btn-outline-secondary" asp-page="/Posts/Details" asp-route-id="@post.Id">查看</a> }
+                <form method="post" asp-page-handler="@(post.IsPublished ? "Withdraw" : "Publish")" asp-route-pageNumber="@Model.PageNumber">
+                    <input type="hidden" name="id" value="@post.Id" />
+                    <button class="btn btn-sm btn-outline-secondary">@(post.IsPublished ? "撤回" : "发布")</button>
+                </form>
+                <form method="post" asp-page-handler="Delete" asp-route-pageNumber="@Model.PageNumber" data-confirm="确定删除这篇文章？此操作无法撤销。">
+                    <input type="hidden" name="id" value="@post.Id" />
+                    <button class="btn btn-sm btn-outline-danger">删除</button>
+                </form>
+            </div></td>
+        </tr>
+    }
+    </tbody>
+</table></div>
+}
+@if (Model.TotalPages > 1)
+{
+    <nav class="pagination-bar" aria-label="文章分页">
+        @if (Model.PageNumber > 1) { <a asp-route-pageNumber="@(Model.PageNumber - 1)">上一页</a> }
+        <span>第 @Model.PageNumber / @Model.TotalPages 页</span>
+        @if (Model.PageNumber < Model.TotalPages) { <a asp-route-pageNumber="@(Model.PageNumber + 1)">下一页</a> }
+    </nav>
+}

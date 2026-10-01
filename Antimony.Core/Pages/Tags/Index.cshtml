@@ -1,0 +1,11 @@
+@page "/tags"
+@model Antimony.Core.Pages.Tags.IndexModel
+@{ ViewData["Title"] = "标签"; }
+<h1 class="mb-4">标签</h1>
+@if (Model.Tags.Count == 0) { <div class="empty-state">还没有公开的标签。</div> }
+<div class="tag-list">
+@foreach (var tag in Model.Tags)
+{
+    <a class="tag" asp-page="/Tags/Details" asp-route-id="@tag.Id">@tag.Name <span class="text-muted">(@tag.Count)</span></a>
+}
+</div>
